@@ -1,0 +1,3 @@
+FROM mariadb
+
+ENV MARIADB_ROOT_PASSWORD=root
