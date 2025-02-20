@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"unsafe"
 )
 
 // Team lead at one interview told me defer will print 5 in this case
@@ -87,6 +88,31 @@ func slice_test2() {
 	//I was right, it's still the same slice
 }
 
+type TestStruct struct {
+	a int
+	b uint
+}
+
+func (s TestStruct) test_struct_method1() {
+	s.a = 5
+	s.b = 6
+}
+
+func (s *TestStruct) test_struct_method2() {
+	s.a = 7
+	s.b = 8
+}
+
+func test_struct_func1(s TestStruct) {
+	s.a = 9
+	s.b = 10
+}
+
+func test_struct_func2(s *TestStruct) {
+	s.a = 11
+	s.b = 12
+}
+
 func main() {
 
 	/*var float_test float32 = 1.9
@@ -99,4 +125,22 @@ func main() {
 	defer_order_test()
 	slice_test1()
 	slice_test2()
+
+	//All as expected by normal C programmer
+	test_instance := TestStruct{0, 0}
+	fmt.Println("Initial state: ", test_instance)
+
+	test_instance.test_struct_method1()
+	fmt.Println("New state: ", test_instance)
+
+	test_instance.test_struct_method2()
+	fmt.Println("New state: ", test_instance)
+
+	test_struct_func1(test_instance)
+	fmt.Println("New state: ", test_instance)
+
+	test_struct_func2(&test_instance)
+	fmt.Println("New state: ", test_instance)
+
+	fmt.Printf("Empty struct sizeof=%d\n", unsafe.Sizeof(struct{}{})) //0, interesting
 }
